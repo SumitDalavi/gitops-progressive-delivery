@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-service-stable
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: demo-service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-service-canary
+spec:
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    app: demo-service
