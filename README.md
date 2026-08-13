@@ -48,6 +48,99 @@ Many CI/CD pipelines claim to do "Canary releases" by just deploying a second de
 └── README.md
 ```
 
+
+## ðŸ“‹ Prerequisites
+
+| Tool | Version | Purpose |
+|------|---------|---------|
+| [kubectl](https://kubernetes.io/docs/tasks/tools/) | >= 1.28 | Kubernetes CLI |
+| [kind](https://kind.sigs.k8s.io/) or [minikube](https://minikube.sigs.k8s.io/) | Latest | Local K8s cluster |
+| [Helm](https://helm.sh/) | >= 3.x | Package manager |
+| [Argo Rollouts kubectl plugin](https://argo-rollouts.readthedocs.io/en/stable/installation/#kubectl-plugin-installation) | Latest | Rollouts CLI |
+
+## ðŸš€ Step-by-Step Setup
+
+### Option A: Local Cluster (kind)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/SumitDalavi/gitops-progressive-delivery.git
+cd gitops-progressive-delivery
+
+# 2. Create a local cluster
+kind create cluster --name progressive-delivery
+
+# 3. Install Argo Rollouts
+kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+
+# 4. Install Prometheus (for metric-driven analysis)
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring --create-namespace
+
+# 5. Deploy the Rollout, Services, and AnalysisTemplate
+kubectl apply -f k8s/rollouts/service.yaml
+kubectl apply -f k8s/rollouts/rollout.yaml
+kubectl apply -f k8s/analysis/analysis-template.yaml
+```
+
+### Option B: Existing Cloud Cluster
+
+```bash
+# Ensure kubectl is connected, then follow steps 3-5 from Option A
+kubectl cluster-info
+```
+
+## ðŸ§ª Usage & Demo â€” Canary Deployment
+
+### Step 1: Watch the rollout status
+```bash
+# Using Argo Rollouts kubectl plugin
+kubectl argo rollouts get rollout demo-rollout --watch
+```
+
+### Step 2: Trigger a canary release
+```bash
+# Update the image to trigger a new rollout
+kubectl argo rollouts set image demo-rollout demo-app=nginx:1.25
+
+# Watch the progressive traffic shift: 20% â†’ 40% â†’ 60% â†’ 100%
+kubectl argo rollouts get rollout demo-rollout --watch
+```
+
+### Step 3: Simulate a rollback
+```bash
+# Deploy a "bad" version
+kubectl argo rollouts set image demo-rollout demo-app=nginx:broken-tag
+
+# The AnalysisTemplate will detect high error rates and auto-abort
+kubectl argo rollouts get rollout demo-rollout --watch
+# Status should show: "Degraded" â†’ "Abort"
+```
+
+### Step 4: Manually promote or abort
+```bash
+# Manually promote a paused canary to 100%
+kubectl argo rollouts promote demo-rollout
+
+# Or abort a bad rollout
+kubectl argo rollouts abort demo-rollout
+```
+
+## âœ… Verification
+
+| Check | Command | Expected |
+|-------|---------|----------|
+| Argo Rollouts installed | `kubectl get pods -n argo-rollouts` | Controller running |
+| Rollout created | `kubectl argo rollouts list rollouts` | demo-rollout listed |
+| Canary active | `kubectl argo rollouts get rollout demo-rollout` | Traffic split visible |
+| Analysis running | `kubectl get analysisruns` | AnalysisRun created |
+
+```bash
+# Cleanup
+kind delete cluster --name progressive-delivery
+```
+
 ## 👨‍💻 Author
 
 *Built to demonstrate advanced GitOps patterns and reliability-aware deployment automation.*
