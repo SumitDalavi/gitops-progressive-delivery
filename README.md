@@ -27,6 +27,10 @@ Many CI/CD pipelines claim to do "Canary releases" by just deploying a second de
 - **Metrics/Observability**: Prometheus
 - **Traffic Routing**: NGINX Ingress (or Gateway API)
 
+> **💡 Alerting Integration:** In production, configure Argo Rollouts notifications to send Slack/PagerDuty alerts on rollout abort/promotion events. See the [Argo Rollouts Notification Engine](https://argo-rollouts.readthedocs.io/en/stable/features/notifications/) documentation.
+
+> **💡 Alerting Integration:** In production, configure Argo Rollouts notifications to send Slack/PagerDuty alerts on rollout abort/promotion events. See the [Argo Rollouts Notification Engine](https://argo-rollouts.readthedocs.io/en/stable/features/notifications/) documentation.
+
 ## Decision Log
 
 | Decision | Rationale |
@@ -49,7 +53,7 @@ Many CI/CD pipelines claim to do "Canary releases" by just deploying a second de
 ```
 
 
-## ðŸ“‹ Prerequisites
+## 📋 Prerequisites
 
 | Tool | Version | Purpose |
 |------|---------|---------|
@@ -58,7 +62,7 @@ Many CI/CD pipelines claim to do "Canary releases" by just deploying a second de
 | [Helm](https://helm.sh/) | >= 3.x | Package manager |
 | [Argo Rollouts kubectl plugin](https://argo-rollouts.readthedocs.io/en/stable/installation/#kubectl-plugin-installation) | Latest | Rollouts CLI |
 
-## ðŸš€ Step-by-Step Setup
+## 🚀 Step-by-Step Setup
 
 ### Option A: Local Cluster (kind)
 
@@ -91,7 +95,7 @@ kubectl apply -f k8s/analysis/analysis-template.yaml
 kubectl cluster-info
 ```
 
-## ðŸ§ª Usage & Demo â€” Canary Deployment
+## 🧪 Usage & Demo â€” Canary Deployment
 
 ### Step 1: Watch the rollout status
 ```bash
@@ -127,7 +131,7 @@ kubectl argo rollouts promote demo-rollout
 kubectl argo rollouts abort demo-rollout
 ```
 
-## âœ… Verification
+## ✅ Verification
 
 | Check | Command | Expected |
 |-------|---------|----------|
@@ -143,4 +147,9 @@ kind delete cluster --name progressive-delivery
 
 ## 👨‍💻 Author
 
-*Built to demonstrate advanced GitOps patterns and reliability-aware deployment automation.*
+**Sumit Dalavi** — Senior DevSecOps / Platform Engineer
+[GitHub](https://github.com/SumitDalavi) | [LinkedIn](https://in.linkedin.com/in/sumit-dalavi-762838129)
+
+---
+
+*Built with a focus on production-grade patterns, not toy demos.*
