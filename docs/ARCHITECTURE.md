@@ -1,5 +1,17 @@
 # Architecture: GitOps Progressive Delivery
 
+## System Diagram
+The following Mermaid.js sequence diagram maps the core workflow and interactions:
+
+```mermaid
+sequenceDiagram
+    Git->>ArgoCD: Sync
+ArgoCD->>Flagger: Update CustomResource
+Flagger->>Mesh: Shift 10% traffic
+Prometheus->>Flagger: Health check OK
+```
+
+
 ## Moving Beyond "Deployments"
 The standard K8s `Deployment` object provides minimal safety. It performs a rolling update based purely on Pod Readiness probes. But a pod can be "ready" (accepting TCP connections) while simultaneously returning HTTP 500s for every request.
 
