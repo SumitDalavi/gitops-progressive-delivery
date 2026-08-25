@@ -1,11 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
-  name: example-rollout
+  name: demo-rollout
 spec:
   replicas: 5
   strategy:
     canary:
+      analysis:
+        templates:
+        - templateName: success-rate
+        startingStep: 2
+        args:
+        - name: service-name
+          value: demo-service
       steps:
       - setWeight: 20
       - pause: {duration: 10s}
@@ -18,14 +25,17 @@ spec:
   revisionHistoryLimit: 2
   selector:
     matchLabels:
-      app: example
+      app: demo
   template:
     metadata:
       labels:
-        app: example
+        app: demo
     spec:
       containers:
-      - name: example
-        image: argoproj/rollouts-demo:blue
+      - name: demo
+        image: demo-app:v1
         ports:
         - containerPort: 8080
+        env:
+        - name: APP_VERSION
+          value: "v1"
