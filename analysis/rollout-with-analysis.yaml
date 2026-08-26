@@ -1,0 +1,51 @@
+# Complete Rollout definition wiring canary + automated analysis
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: myapp
+  namespace: demo
+spec:
+  replicas: 5
+  strategy:
+    canary:
+      canaryService: myapp-canary
+      stableService: myapp-stable
+      analysis:
+        templates:
+          - templateName: success-rate
+        startingStep: 2
+        args:
+          - name: service-name
+            value: myapp-canary
+      steps:
+        - setWeight: 10    # 10% canary
+        - pause: {duration: 2m}
+        - analysis:
+            templates: [{templateName: success-rate}]
+            args: [{name: service-name, value: myapp-canary}]
+        - setWeight: 30    # 30% canary
+        - pause: {duration: 2m}
+        - setWeight: 50
+        - pause: {duration: 2m}
+        - setWeight: 80
+        - pause: {duration: 1m}
+        # Final analysis before 100%
+        - analysis:
+            templates: [{templateName: success-rate}]
+            args: [{name: service-name, value: myapp-canary}]
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: myapp
+          image: myapp:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: 500m, memory: 512Mi}

@@ -1,0 +1,47 @@
+# Argo Rollouts AnalysisTemplate using Prometheus metric gates
+# Canary promotion blocked if success rate drops below 99%
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: success-rate
+  namespace: demo
+spec:
+  args:
+    - name: service-name
+    - name: namespace
+      value: demo
+  metrics:
+    - name: success-rate
+      interval: 60s
+      count: 5
+      successCondition: result[0] >= 0.99
+      failureLimit: 2
+      provider:
+        prometheus:
+          address: http://prometheus-operated.monitoring.svc:9090
+          query: |
+            sum(rate(http_requests_total{
+              service="{{args.service-name}}",
+              namespace="{{args.namespace}}",
+              status!~"5.."
+            }[2m])) /
+            sum(rate(http_requests_total{
+              service="{{args.service-name}}",
+              namespace="{{args.namespace}}"
+            }[2m]))
+
+    - name: p99-latency-ms
+      interval: 60s
+      count: 5
+      successCondition: result[0] <= 500
+      failureLimit: 2
+      provider:
+        prometheus:
+          address: http://prometheus-operated.monitoring.svc:9090
+          query: |
+            histogram_quantile(0.99,
+              sum(rate(http_request_duration_milliseconds_bucket{
+                service="{{args.service-name}}",
+                namespace="{{args.namespace}}"
+              }[2m])) by (le)
+            )
