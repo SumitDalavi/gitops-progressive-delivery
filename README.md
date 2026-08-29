@@ -112,20 +112,30 @@ kubectl argo rollouts get rollout demo-rollout --watch
 # Update the image to trigger a new rollout
 kubectl argo rollouts set image demo-rollout demo-app=nginx:1.25
 
-# Watch the progressive traffic shift: 20% â†’ 40% â†’ 60% â†’ 100%
+# Watch the progressive traffic shift: 20% → 40% → 60% → 100%
 kubectl argo rollouts get rollout demo-rollout --watch
 ```
 
-### Step 3: Simulate a rollback
+### Step 3: Automated Rollback Demo
+```bash
+./scripts/demo_bad_release_rollback.sh
+```
+
+## 🧪 Real End-to-End E2E Test
+To verify the Argo Rollout functionality on a real `kind` cluster with metric-driven AnalysisRuns:
+```powershell
+# Creates a kind cluster, installs Argo Rollouts, applies the Rollout/AnalysisTemplate
+# and simulates a Canary failure triggering an automated rollback.
+.\scripts\test_progressive_delivery_e2e.ps1
+```
+
+### Step 4: Simulate a rollback
 ```bash
 # Deploy a "bad" version
 kubectl argo rollouts set image demo-rollout demo-app=nginx:broken-tag
 
 # The AnalysisTemplate will detect high error rates and auto-abort
 kubectl argo rollouts get rollout demo-rollout --watch
-# Status should show: "Degraded" â†’ "Abort"
-```
-
 ### Step 4: Manually promote or abort
 ```bash
 # Manually promote a paused canary to 100%

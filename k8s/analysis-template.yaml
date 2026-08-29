@@ -7,12 +7,33 @@ spec:
   - name: service-name
   metrics:
   - name: success-rate
-    interval: 1m
-    successCondition: result[0] >= 0.95
+    interval: 10s
+    count: 2
     provider:
-      prometheus:
-        address: http://prometheus-server.monitoring.svc.cluster.local:9090
-        query: |
-          sum(rate(http_requests_total{status=~"2.*", service="{{args.service-name}}"}[2m])) 
-          / 
-          sum(rate(http_requests_total{service="{{args.service-name}}"}[2m]))
+      job:
+        spec:
+          backoffLimit: 0
+          template:
+            spec:
+              containers:
+              - name: metric-check
+                image: alpine:3.18
+                command: ["/bin/sh", "-c"]
+                args:
+                - |
+                  RATE=$(cat /etc/config/error_rate || echo "0")
+                  if [ "$RATE" -gt 5 ]; then
+                    echo "High error rate detected ($RATE%)! Fails analysis."
+                    exit 1
+                  else
+                    echo "Success rate OK ($RATE% errors)."
+                    exit 0
+                  fi
+                volumeMounts:
+                - name: config-volume
+                  mountPath: /etc/config
+              restartPolicy: Never
+              volumes:
+              - name: config-volume
+                configMap:
+                  name: metric-config
