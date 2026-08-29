@@ -3,6 +3,8 @@
 
 # GitOps Progressive Delivery Platform 🚢🚀
 
+[![CI](https://github.com/SumitDalavi/gitops-progressive-delivery/actions/workflows/ci.yml/badge.svg)](https://github.com/SumitDalavi/gitops-progressive-delivery/actions/workflows/ci.yml)
+
 > **Maturity:** Lab / Reference Implementation
 > _Automated Canary deployments and metric-driven rollbacks using Argo Rollouts and Prometheus — turning deployments from "hope and pray" into statistically validated rollout strategies._
 
