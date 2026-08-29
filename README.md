@@ -1,6 +1,7 @@
 # GitOps Progressive Delivery Platform 🚢🚀
 
-> Automated Canary deployments and metric-driven rollbacks using Argo Rollouts and Prometheus — turning deployments from "hope and pray" into statistically validated rollout strategies.
+> **Maturity:** Lab / Reference Implementation
+> _Automated Canary deployments and metric-driven rollbacks using Argo Rollouts and Prometheus — turning deployments from "hope and pray" into statistically validated rollout strategies._
 
 ## The Problem
 
@@ -150,6 +151,27 @@ kind delete cluster --name progressive-delivery
 **Sumit Dalavi** — Senior DevSecOps / Platform Engineer
 [GitHub](https://github.com/SumitDalavi) | [LinkedIn](https://in.linkedin.com/in/sumit-dalavi-762838129)
 
----
+## 📚 Documentation
 
-*Built with a focus on production-grade patterns, not toy demos.*
+- [Architecture](docs/ARCHITECTURE.md) — System diagram and component details
+- [Runbook](docs/runbook.md) — Setup, commands, and expected outputs
+- [Decisions](docs/decisions.md) — ADRs for rollout strategy
+- [Changelog](docs/changelog.md) — Change history
+
+## Mock Boundaries (Honest Scope)
+
+| What | Status | Details |
+|---|---|---|
+| Delivery Controller | **Real** | Argo Rollouts installed on local cluster. |
+| Metrics/Observability | **Mocked** | E2E demo simulates Prometheus metrics via static responses for deterministic testing without full Prometheus overhead. |
+| Traffic Routing | **Simulated** | Local port-forwarding rather than real cloud load balancer. |
+
+## 🔗 Related Projects
+
+- [`multi-cluster-gitops-promotion`](../multi-cluster-gitops-promotion/) — Next step for multi-environment delivery.
+
+## CI & Reliability Updates (August 2026)
+
+- **CI Pipeline Remediation:** Successfully resolved all CI/CD pipeline failures.
+- **Specific Fix:** Fixed test flake on slow cluster spin up.
+- **Status:** 🟩 Passing
