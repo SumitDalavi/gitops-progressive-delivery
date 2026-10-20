@@ -170,29 +170,25 @@ kind delete cluster --name progressive-delivery
 **Sumit Dalavi** — Senior DevSecOps / Platform Engineer
 [GitHub](https://github.com/SumitDalavi) | [LinkedIn](https://in.linkedin.com/in/sumit-dalavi-762838129)
 
-## 🚀 Progressive Credential Loading & Execution Tiers
+## 🛠️ Verification & Deployment Tiers
 
-This project implements **Progressive Credential Loading (PCL)**, allowing it to run immediately out-of-the-box without external dependencies while seamlessly upgrading as credentials are provided.
+This progressive delivery architecture supports staged validation from local rollout simulations to automated production canary deployments.
 
-### Tier 1: Zero-Config Mock Mode (Default)
-Ideal for CI, testing, and rapid local evaluation.
-- **Execution:** Run with default configuration (`cp .env.example .env`). Zero API keys, databases, or cloud credentials required.
-- **Fallback Behavior:** In-memory caches, deterministic offline heuristics, mock vector embeddings, and local mock storage are automatically used.
-- **Health Verification:** Endpoints report `{"mode": "mock"}` for unconfigured dependencies.
+### Tier 1: Static Rollout & Analysis Template Validation (Default)
+Validate Argo Rollout manifests and MetricAnalysis definitions locally.
+- **Execution:** Run `kubectl-argo-rollouts lint` or kustomize build on rollout templates.
+- **Behavior:** Confirms step weighting, pause durations, and Prometheus metric queries offline.
+- **Zero Cluster Dependencies:** Runs without a live cluster or active Prometheus server.
 
-### Tier 2: Local Development with Live Services
-Connect specific external services while keeping others mocked.
-- **Execution:** Provide credentials in `.env` for the services you want active (e.g., `PROMETHEUS_URL, APP_VERSION`).
-- **Progressive Upgrade:** The runtime inspects environment variables on boot and dynamically promotes only configured modules to live mode.
-- **Safe Fallback:** Any missing credentials automatically remain on mock fallbacks with no crashes or missing service errors.
+### Tier 2: Canary Deployment in Staging
+Execute progressive rollouts in a staging cluster against simulated traffic.
+- **Execution:** Deploy rollout manifest: `kubectl apply -f rollouts/`.
+- **Behavior:** Traffic splits progressively (e.g. 10% -> 25% -> 50%) based on automated analysis runs.
 
-### Tier 3: Production Hardened
-Enterprise deployment with production-grade backends, security scans, and container distributions.
-- **Release Distribution:** Download standalone release bundle and verified checksums:
-  ```bash
-  gh release download v0.2.0 --repo SumitDalavi/gitops-progressive-delivery
-  ```
-- **Integrity & Security:** Checksums and SPDX SBOM (`sbom.spdx.json`) available on [GitHub Releases](https://github.com/SumitDalavi/gitops-progressive-delivery/releases).
+### Tier 3: Production Automated Canary with Prometheus Gating
+Automate canary promotions with real-time error rate and latency SLI/SLO gating.
+- **Distribution:** Release packages and verified SPDX SBOM available on [GitHub Releases](https://github.com/SumitDalavi/gitops-progressive-delivery/releases).
+
 
 ## 📚 Documentation
 
