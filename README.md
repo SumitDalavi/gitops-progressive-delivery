@@ -1,13 +1,12 @@
 > **NOTE:** This repository is an archival lab or partial prototype. It is not actively maintained and should not be used as a reference for production-grade deployments or performance benchmarks.
 
-
 # GitOps Progressive Delivery Platform 🚢🚀
 
-[![Release](https://img.shields.io/github/v/release/SumitDalavi/gitops-progressive-delivery)](https://github.com/SumitDalavi/gitops-progressive-delivery/releases)
+[![CI Pipeline](https://github.com/SumitDalavi/gitops-progressive-delivery/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/SumitDalavi/gitops-progressive-delivery/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/SumitDalavi/gitops-progressive-delivery?color=0969da&label=release&logo=github)](https://github.com/SumitDalavi/gitops-progressive-delivery/releases)
 [![Release Workflow](https://github.com/SumitDalavi/gitops-progressive-delivery/actions/workflows/release.yml/badge.svg)](https://github.com/SumitDalavi/gitops-progressive-delivery/actions/workflows/release.yml)
-
-
-[![CI](https://github.com/SumitDalavi/gitops-progressive-delivery/actions/workflows/ci.yml/badge.svg)](https://github.com/SumitDalavi/gitops-progressive-delivery/actions/workflows/ci.yml)
+[![SBOM](https://img.shields.io/badge/SBOM-SPDX%202.3-blueviolet?logo=spdx)](https://github.com/SumitDalavi/gitops-progressive-delivery/releases/tag/v0.2.0)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
 > **Maturity:** Lab / Reference Implementation
 > _Automated Canary deployments and metric-driven rollbacks using Argo Rollouts and Prometheus — turning deployments from "hope and pray" into statistically validated rollout strategies._
@@ -61,7 +60,6 @@ Many CI/CD pipelines claim to do "Canary releases" by just deploying a second de
 ├── docs/ARCHITECTURE.md
 └── README.md
 ```
-
 
 ## 📋 Prerequisites
 
@@ -188,7 +186,6 @@ Execute progressive rollouts in a staging cluster against simulated traffic.
 ### Tier 3: Production Automated Canary with Prometheus Gating
 Automate canary promotions with real-time error rate and latency SLI/SLO gating.
 - **Distribution:** Release packages and verified SPDX SBOM available on [GitHub Releases](https://github.com/SumitDalavi/gitops-progressive-delivery/releases).
-
 
 ## 📚 Documentation
 
