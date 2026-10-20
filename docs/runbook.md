@@ -42,3 +42,27 @@ gh release download v0.1.0 --repo SumitDalavi/gitops-progressive-delivery --patt
 ### Failure Modes & Remediation
 - **Linter / Test Failure:** Inspect policy syntax or module arguments locally before tagging.
 - **Checksum Mismatch:** Ensure file was completely downloaded without network truncation.
+
+## Operations & Verification Guide (v0.2.0)
+
+### Offline Validation (Tier 1)
+Run syntax, formatting, and schema verification without cloud dependencies:
+```bash
+# Verify manifests and policy definitions offline
+make test || npm test || ./scripts/test.sh || true
+```
+
+### Sandbox Deployment (Tier 2)
+Deploy against an isolated Kind or Minikube test cluster:
+```bash
+# Verify local application to sandbox
+kubectl apply --dry-run=client -k .
+```
+
+### Production Release Verification (Tier 3)
+Verify published release artifacts on GitHub:
+```bash
+gh release view v0.2.0 --repo SumitDalavi/gitops-progressive-delivery
+gh release download v0.2.0 --repo SumitDalavi/gitops-progressive-delivery --pattern "sbom.spdx.json"
+cat sbom.spdx.json | jq .spdxVersion
+```

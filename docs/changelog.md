@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.0] - 2026-10-20
+### Added
+- **Multi-Tier Verification:** Staged validation architecture (local static linting, sandbox cluster testing, GitOps production rollout).
+- **Supply Chain Security:** Integrated Trivy vulnerability scanning, SPDX JSON SBOM generation, and SHA256 checksums on all release assets.
+- **Developer Documentation:** Standardized 3-tier execution instructions and environment configuration templates (`.env.example`).
+
+## [0.1.0] - 2026-10-18
+### Added
+- Initial catalog release with verified baseline policies, manifests, and automated CI pipelines.
+
 ## [Unreleased] - 2026-08-30
 
 ### Added/Fixed (Phase 6 Functional Upgrades)
